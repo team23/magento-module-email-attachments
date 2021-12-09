@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="sales_pdf"
+                 translate="label"
+                 type="text"
+                 sortOrder="302"
+                 showInDefault="1"
+                 showInWebsite="1"
+                 showInStore="1">
+            <group id="email_attachments"
+                   translate="label"
+                   type="text"
+                   sortOrder="40"
+                   showInDefault="1"
+                   showInWebsite="1"
+                   showInStore="1">
+                <label>E-Mail Attachments</label>
+
+                <field id="order"
+                       translate="label"
+                       type="text"
+                       sortOrder="1"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1"
+                       canRestore="1">
+                    <label>Order E-Mail Attachments</label>
+                    <frontend_model>Team23\EmailAttachmentsAdminUi\Block\Adminhtml\Form\Field\Attachment</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+
+                <field id="invoice"
+                       translate="label"
+                       type="text"
+                       sortOrder="2"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1"
+                       canRestore="1">
+                    <label>Invoice E-Mail Attachments</label>
+                    <frontend_model>Team23\EmailAttachmentsAdminUi\Block\Adminhtml\Form\Field\Attachment</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+
+                <field id="shipment"
+                       translate="label"
+                       type="text"
+                       sortOrder="3"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1"
+                       canRestore="1">
+                    <label>Shipment E-Mail Attachments</label>
+                    <frontend_model>Team23\EmailAttachmentsAdminUi\Block\Adminhtml\Form\Field\Attachment</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+
+                <field id="creditmemo"
+                       translate="label"
+                       type="text"
+                       sortOrder="4"
+                       showInDefault="1"
+                       showInWebsite="1"
+                       showInStore="1"
+                       canRestore="1">
+                    <label>Credit Memo E-Mail Attachments</label>
+                    <frontend_model>Team23\EmailAttachmentsAdminUi\Block\Adminhtml\Form\Field\Attachment</frontend_model>
+                    <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
