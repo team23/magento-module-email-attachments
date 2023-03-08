@@ -78,25 +78,25 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
 
         if (empty($attachments)) {
             parent::send();
-        }
+        } else {
+            $this->configureEmailTemplate();
 
-        $this->configureEmailTemplate();
+            $this->transportBuilder->addTo(
+                $this->identityContainer->getCustomerEmail(),
+                $this->identityContainer->getCustomerName()
+            );
 
-        $this->transportBuilder->addTo(
-            $this->identityContainer->getCustomerEmail(),
-            $this->identityContainer->getCustomerName()
-        );
+            $copyTo = $this->identityContainer->getEmailCopyTo();
 
-        $copyTo = $this->identityContainer->getEmailCopyTo();
-
-        if (!empty($copyTo) && $this->identityContainer->getCopyMethod() == 'bcc') {
-            foreach ($copyTo as $email) {
-                $this->transportBuilder->addBcc($email);
+            if (!empty($copyTo) && $this->identityContainer->getCopyMethod() == 'bcc') {
+                foreach ($copyTo as $email) {
+                    $this->transportBuilder->addBcc($email);
+                }
             }
-        }
 
-        $transport = $this->transportBuilder->getTransport();
-        $transport->sendMessage();
+            $transport = $this->transportBuilder->getTransport();
+            $transport->sendMessage();
+        }
     }
 
     /**
@@ -108,16 +108,16 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
 
         if (empty($attachments)) {
             parent::sendCopyTo();
-        }
+        } else {
+            $copyTo = $this->identityContainer->getEmailCopyTo();
 
-        $copyTo = $this->identityContainer->getEmailCopyTo();
-
-        if (!empty($copyTo)) {
-            foreach ($copyTo as $email) {
-                $this->configureEmailTemplate();
-                $this->transportBuilder->addTo($email);
-                $transport = $this->transportBuilder->getTransport();
-                $transport->sendMessage();
+            if (!empty($copyTo)) {
+                foreach ($copyTo as $email) {
+                    $this->configureEmailTemplate();
+                    $this->transportBuilder->addTo($email);
+                    $transport = $this->transportBuilder->getTransport();
+                    $transport->sendMessage();
+                }
             }
         }
     }
