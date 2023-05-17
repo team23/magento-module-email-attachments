@@ -1,7 +1,7 @@
 {
     "name": "team23/module-email-attachments",
     "description": "Attach different files to transaction mails",
-    "version": "1.1.2",
+    "version": "2.0.0",
     "type": "magento2-module",
     "license": [
         "BSD-3-Clause"
