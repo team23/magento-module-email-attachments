@@ -11,7 +11,7 @@ use Magento\Sales\Model\Order\Email\Container\IdentityInterface;
 use Magento\Sales\Model\Order\Email\Container\Template;
 use Team23\EmailAttachments\Model\Template\TransportBuilder;
 use Team23\EmailAttachmentsApi\Api\GetAttachmentsInterface;
-use Zend_Mime;
+use Laminas\Mime\Mime;
 
 /**
  * Class SenderBuilder
@@ -168,8 +168,8 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
                 $content,
                 $attachmentInfo['basename'],
                 'application/pdf',
-                Zend_Mime::DISPOSITION_ATTACHMENT,
-                Zend_Mime::ENCODING_BASE64
+                Mime::DISPOSITION_ATTACHMENT,
+                Mime::ENCODING_BASE64
             );
         }
 

@@ -17,8 +17,8 @@ use Magento\Framework\Mail\Template\SenderResolverInterface;
 use Magento\Framework\Mail\TransportInterfaceFactory;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Phrase;
-use Zend\Mime\Part;
-use Zend_Mime;
+use Laminas\Mime\Mime;
+use Laminas\Mime\Part;
 
 /**
  * Class TransportBuilder
@@ -115,9 +115,9 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     public function addAttachment(
         string $content,
         string $fileName,
-        string $mimeType = Zend_Mime::TYPE_OCTETSTREAM,
-        string $disposition = Zend_Mime::DISPOSITION_ATTACHMENT,
-        string $encoding = Zend_Mime::ENCODING_BASE64
+        string $mimeType = Mime::TYPE_OCTETSTREAM,
+        string $disposition = Mime::DISPOSITION_ATTACHMENT,
+        string $encoding = Mime::ENCODING_BASE64
     ): Part {
         $attachment = new Part($content);
 
