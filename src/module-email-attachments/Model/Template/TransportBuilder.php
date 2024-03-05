@@ -96,10 +96,10 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
             $addressConverter
         );
 
-        $this->mimePartInterfaceFactory     = $mimePartInterfaceFactory;
+        $this->mimePartInterfaceFactory = $mimePartInterfaceFactory;
         $this->emailMessageInterfaceFactory = $emailMessageInterfaceFactory;
-        $this->mimeMessageInterfaceFactory  = $mimeMessageInterfaceFactory;
-        $this->addressConverter             = $addressConverter;
+        $this->mimeMessageInterfaceFactory = $mimeMessageInterfaceFactory;
+        $this->addressConverter = $addressConverter;
     }
 
     /**
@@ -120,15 +120,12 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
         string $encoding = Mime::ENCODING_BASE64
     ): Part {
         $attachment = new Part($content);
-
         $attachment
             ->setType($mimeType)
             ->setEncoding($encoding)
             ->setDisposition($disposition)
             ->setFileName($fileName);
-
         $this->attachments[] = $attachment;
-
         return $attachment;
     }
 
@@ -138,7 +135,6 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     public function addTo($address, $name = '')
     {
         $this->addAddressByType('to', $address, $name);
-
         return $this;
     }
 
@@ -148,7 +144,6 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     public function addCc($address, $name = '')
     {
         $this->addAddressByType('cc', $address, $name);
-
         return $this;
     }
 
@@ -158,7 +153,6 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     public function addBcc($address)
     {
         $this->addAddressByType('bcc', $address);
-
         return $this;
     }
 
@@ -168,7 +162,6 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     public function setReplyTo($email, $name = null)
     {
         $this->addAddressByType('replyTo', $email, $name);
-
         return $this;
     }
 
@@ -179,7 +172,6 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     {
         $result = $this->_senderResolver->resolve($from, $scopeId);
         $this->addAddressByType('from', $result['email'], $result['name']);
-
         return $this;
     }
 
@@ -198,12 +190,11 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
      */
     protected function reset()
     {
-        $this->messageData       = [];
+        $this->messageData = [];
         $this->templateIdentifier = null;
-        $this->templateVars      = null;
-        $this->templateOptions   = null;
-        $this->attachments       = [];
-
+        $this->templateVars = null;
+        $this->templateOptions = null;
+        $this->attachments = [];
         return $this;
     }
 
@@ -213,7 +204,7 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
     protected function prepareMessage()
     {
         $template = $this->getTemplate();
-        $content  = $template->processTemplate();
+        $content = $template->processTemplate();
 
         switch ($template->getType()) {
             case TemplateTypesInterface::TYPE_TEXT:
@@ -227,24 +218,19 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
                     new Phrase('Unknown template type')
                 );
         }
-
         $mimePart = $this->mimePartInterfaceFactory->create(['content' => $content]);
-        $parts    = [$mimePart];
+        $parts = [$mimePart];
 
         foreach ($this->attachments as $attachment) {
             $parts[] = $attachment;
         }
-
         $this->messageData['encoding'] = $mimePart->getCharset();
-        $this->messageData['body']     = $this->mimeMessageInterfaceFactory->create(['parts' => $parts]);
-
+        $this->messageData['body'] = $this->mimeMessageInterfaceFactory->create(['parts' => $parts]);
         $this->messageData['subject'] = html_entity_decode(
             (string) $template->getSubject(),
             ENT_QUOTES
         );
-
         $this->message = $this->emailMessageInterfaceFactory->create($this->messageData);
-
         return $this;
     }
 
@@ -263,9 +249,7 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
             $this->messageData[$addressType][] = $this->addressConverter->convert($email, $name);
             return;
         }
-
         $convertedAddressArray = $this->addressConverter->convertMany($email);
-
         if (isset($this->messageData[$addressType])) {
             $this->messageData[$addressType] = array_merge(
                 $this->messageData[$addressType],

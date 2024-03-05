@@ -1,11 +1,9 @@
 {
     "name": "team23/module-email-attachments-api",
     "description": "Attach different files to transaction mails",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "type": "magento2-module",
-    "license": [
-        "BSD-3-Clause"
-    ],
+    "license": ["BSD-3-Clause"],
     "authors": [
         {
             "name": "Team23 GmbH",
@@ -14,11 +12,12 @@
         }
     ],
     "minimum-stability": "stable",
+    "prefer-stable": true,
     "require": {
         "php": "^7.4||^8.1",
-        "magento/framework": ">=103",
-        "magento/module-backend": ">=100",
-        "magento/module-email": ">=101"
+        "magento/framework": "^103.0",
+        "psr/log": "^1.1",
+        "team23/module-email-attachments-admin-ui": "^1.2"
     },
     "keywords": [
         "Magento 2",

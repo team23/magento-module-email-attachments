@@ -62,10 +62,9 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
             $transportBuilderByStore
         );
 
-        $this->fileDriver      = $fileDriver;
-        $this->fileInfo        = $fileInfo;
+        $this->fileDriver = $fileDriver;
+        $this->fileInfo = $fileInfo;
         $this->getAttachments = $getAttachments;
-
         $this->transportBuilder->resetAttachments();
     }
 
@@ -74,29 +73,8 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
      */
     public function send()
     {
-        $attachments = $this->addAttachments();
-
-        if (empty($attachments)) {
-            parent::send();
-        } else {
-            $this->configureEmailTemplate();
-
-            $this->transportBuilder->addTo(
-                $this->identityContainer->getCustomerEmail(),
-                $this->identityContainer->getCustomerName()
-            );
-
-            $copyTo = $this->identityContainer->getEmailCopyTo();
-
-            if (!empty($copyTo) && $this->identityContainer->getCopyMethod() == 'bcc') {
-                foreach ($copyTo as $email) {
-                    $this->transportBuilder->addBcc($email);
-                }
-            }
-
-            $transport = $this->transportBuilder->getTransport();
-            $transport->sendMessage();
-        }
+        $this->addAttachments();
+        parent::send();
     }
 
     /**
@@ -104,22 +82,8 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
      */
     public function sendCopyTo()
     {
-        $attachments = $this->addAttachments();
-
-        if (empty($attachments)) {
-            parent::sendCopyTo();
-        } else {
-            $copyTo = $this->identityContainer->getEmailCopyTo();
-
-            if (!empty($copyTo)) {
-                foreach ($copyTo as $email) {
-                    $this->configureEmailTemplate();
-                    $this->transportBuilder->addTo($email);
-                    $transport = $this->transportBuilder->getTransport();
-                    $transport->sendMessage();
-                }
-            }
-        }
+        $this->addAttachments();
+        parent::sendCopyTo();
     }
 
     /**
@@ -130,9 +94,9 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
     private function addAttachments(): array
     {
         $templateVars = $this->templateContainer->getTemplateVars();
-        $storeId      = $templateVars['store']->getId();
-        $type         = false;
-        $result       = [];
+        $storeId = $templateVars['store']->getId();
+        $type = false;
+        $result = [];
 
         if (isset($templateVars['invoice'])) {
             $type = 'invoice';
@@ -150,17 +114,16 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
 
         try {
             $attachments = $this->getAttachments->get($type, $storeId);
-        } catch (LocalizedException $e) {
+        } catch (LocalizedException) {
             return $result;
         }
 
         foreach ($attachments as $attachment) {
             try {
                 $content = $this->fileDriver->fileGetContents($attachment);
-            } catch (FileSystemException $e) {
+            } catch (FileSystemException) {
                 continue;
             }
-
             $attachmentInfo = $this->fileInfo->getPathInfo($attachment);
 
             /** @var TransportBuilder $transportBuilder */
@@ -172,7 +135,6 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
                 Mime::ENCODING_BASE64
             );
         }
-
         return $result;
     }
 }
