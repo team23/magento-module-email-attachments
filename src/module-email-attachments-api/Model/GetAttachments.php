@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Team23\EmailAttachmentsApi\Model;
 
@@ -11,35 +12,8 @@ use Psr\Log\LoggerInterface;
 use Team23\EmailAttachmentsAdminUi\Model\Backend\Config;
 use Team23\EmailAttachmentsApi\Api\GetAttachmentsInterface;
 
-/**
- * Class GetAttachments
- *
- * @api
- * @version 1.0.0
- * @package Team23\EmailAttachmentsApi\Model
- */
 class GetAttachments implements GetAttachmentsInterface
 {
-    /**
-     * @var Filesystem
-     */
-    private $fileSystem;
-
-    /**
-     * @var File
-     */
-    private $fileDriver;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var Config
-     */
-    private $configReader;
-
     /**
      * GetAttachments constructor
      *
@@ -49,39 +23,25 @@ class GetAttachments implements GetAttachmentsInterface
      * @param Config $configReader
      */
     public function __construct(
-        Filesystem $fileSystem,
-        File $fileDriver,
-        LoggerInterface $logger,
-        Config $configReader
+        private readonly Filesystem $fileSystem,
+        private readonly File $fileDriver,
+        private readonly LoggerInterface $logger,
+        private readonly Config $configReader
     ) {
-        $this->fileSystem   = $fileSystem;
-        $this->fileDriver   = $fileDriver;
-        $this->logger      = $logger;
-        $this->configReader = $configReader;
     }
 
     /**
      * @inheritDoc
      */
-    public function get(string $type, int $storeId)
+    public function get(string $type, int $storeId): array
     {
-        switch ($type) {
-            case 'order':
-                $files = $this->configReader->getOrderEmailAttachments($storeId);
-                break;
-            case 'invoice':
-                $files = $this->configReader->getInvoiceEmailAttachments($storeId);
-                break;
-            case 'shipment':
-                $files = $this->configReader->getShipmentEmailAttachments($storeId);
-                break;
-            case 'creditmemo':
-                $files = $this->configReader->getCreditMemoEmailAttachments($storeId);
-                break;
-            default:
-                throw new LocalizedException(__('Wrong type for transactional email.'));
-        }
-
+        $files = match ($type) {
+            'order' => $this->configReader->getOrderEmailAttachments($storeId),
+            'invoice' => $this->configReader->getInvoiceEmailAttachments($storeId),
+            'shipment' => $this->configReader->getShipmentEmailAttachments($storeId),
+            'creditmemo' => $this->configReader->getCreditMemoEmailAttachments($storeId),
+            default => throw new LocalizedException(__('Wrong type for transactional email.')),
+        };
         return $this->finalizeAttachments($files);
     }
 
@@ -94,14 +54,13 @@ class GetAttachments implements GetAttachmentsInterface
     private function finalizeAttachments(array $attachments): array
     {
         $result = [];
-        $path   = rtrim(
+        $path = rtrim(
             $this->fileSystem->getDirectoryRead(DirectoryList::MEDIA)->getAbsolutePath(),
             '/'
         );
 
         foreach ($attachments as $attachment) {
             $file = $path . '/' . ltrim($attachment, '/');
-
             try {
                 if ($this->fileDriver->isExists($file)) {
                     $result[] = $file;
@@ -110,7 +69,6 @@ class GetAttachments implements GetAttachmentsInterface
                 $this->logger->critical($e->getMessage());
             }
         }
-
         return $result;
     }
 }

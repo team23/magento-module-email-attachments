@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Team23\EmailAttachments\Model\Template;
 
@@ -21,41 +22,20 @@ use Laminas\Mime\Mime;
 use Laminas\Mime\Part;
 
 /**
- * Class TransportBuilder
- *
- * @package Team23\EmailAttachments\Model\Template
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.LongVariableName)
  */
 class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
 {
     /**
-     * @var EmailMessageInterfaceFactory
+     * @var array
      */
-    private $emailMessageInterfaceFactory;
-
-    /**
-     * @var MimeMessageInterfaceFactory
-     */
-    private $mimeMessageInterfaceFactory;
-
-    /**
-     * @var MimePartInterfaceFactory
-     */
-    private $mimePartInterfaceFactory;
-
-    /**
-     * @var AddressConverter
-     */
-    private $addressConverter;
+    private array $messageData = [];
 
     /**
      * @var array
      */
-    private $messageData = [];
-
-    /**
-     * @var array
-     */
-    private $attachments = [];
+    private array $attachments = [];
 
     /**
      * TransportBuilder constructor
@@ -70,7 +50,9 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
      * @param MimeMessageInterfaceFactory $mimeMessageInterfaceFactory
      * @param MimePartInterfaceFactory $mimePartInterfaceFactory
      * @param AddressConverter $addressConverter
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
+    // phpcs:ignore Generic.CodeAnalysis.UselessOverridingMethod.Found
     public function __construct(
         FactoryInterface $templateFactory,
         MessageInterface $message,
@@ -78,10 +60,10 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
         ObjectManagerInterface $objectManager,
         TransportInterfaceFactory $mailTransportFactory,
         MessageInterfaceFactory $messageFactory,
-        EmailMessageInterfaceFactory $emailMessageInterfaceFactory,
-        MimeMessageInterfaceFactory $mimeMessageInterfaceFactory,
-        MimePartInterfaceFactory $mimePartInterfaceFactory,
-        AddressConverter $addressConverter
+        private readonly EmailMessageInterfaceFactory $emailMessageInterfaceFactory,
+        private readonly MimeMessageInterfaceFactory $mimeMessageInterfaceFactory,
+        private readonly MimePartInterfaceFactory $mimePartInterfaceFactory,
+        private readonly AddressConverter $addressConverter
     ) {
         parent::__construct(
             $templateFactory,
@@ -95,11 +77,6 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
             $mimePartInterfaceFactory,
             $addressConverter
         );
-
-        $this->mimePartInterfaceFactory = $mimePartInterfaceFactory;
-        $this->emailMessageInterfaceFactory = $emailMessageInterfaceFactory;
-        $this->mimeMessageInterfaceFactory = $mimeMessageInterfaceFactory;
-        $this->addressConverter = $addressConverter;
     }
 
     /**
@@ -180,7 +157,7 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
      *
      * @return $this
      */
-    public function resetAttachments()
+    public function resetAttachments(): static
     {
         return $this->reset();
     }
@@ -206,19 +183,14 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
         $template = $this->getTemplate();
         $content = $template->processTemplate();
 
-        switch ($template->getType()) {
-            case TemplateTypesInterface::TYPE_TEXT:
-                $part['type'] = MimeInterface::TYPE_TEXT;
-                break;
-            case TemplateTypesInterface::TYPE_HTML:
-                $part['type'] = MimeInterface::TYPE_HTML;
-                break;
-            default:
-                throw new LocalizedException(
-                    new Phrase('Unknown template type')
-                );
-        }
-        $mimePart = $this->mimePartInterfaceFactory->create(['content' => $content]);
+        $partType = match ($template->getType()) {
+            TemplateTypesInterface::TYPE_TEXT => MimeInterface::TYPE_TEXT,
+            TemplateTypesInterface::TYPE_HTML => MimeInterface::TYPE_HTML,
+            default => throw new LocalizedException(
+                new Phrase('Unknown template type')
+            ),
+        };
+        $mimePart = $this->mimePartInterfaceFactory->create(['content' => $content, 'type' => $partType]);
         $parts = [$mimePart];
 
         foreach ($this->attachments as $attachment) {
@@ -226,6 +198,7 @@ class TransportBuilder extends \Magento\Framework\Mail\Template\TransportBuilder
         }
         $this->messageData['encoding'] = $mimePart->getCharset();
         $this->messageData['body'] = $this->mimeMessageInterfaceFactory->create(['parts' => $parts]);
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
         $this->messageData['subject'] = html_entity_decode(
             (string) $template->getSubject(),
             ENT_QUOTES

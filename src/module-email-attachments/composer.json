@@ -14,11 +14,11 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": "^7.4||^8.1",
+        "php": "^8.1",
         "laminas/laminas-mime": "^2.12",
         "magento/framework": "^103.0",
         "magento/module-sales": "^103.0",
-        "team23/module-email-attachments-api": "^1.0"
+        "team23/module-email-attachments-api": "^2.0"
     },
     "keywords": [
         "Magento 2",
