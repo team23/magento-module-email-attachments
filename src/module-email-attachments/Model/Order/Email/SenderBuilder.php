@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Team23\EmailAttachments\Model\Order\Email;
 
@@ -14,27 +15,10 @@ use Team23\EmailAttachmentsApi\Api\GetAttachmentsInterface;
 use Laminas\Mime\Mime;
 
 /**
- * Class SenderBuilder
- *
- * @package Team23\EmailAttachments\Model\Order\Email
+ * @SuppressWarnings(PHPMD.LongVariableName)
  */
 class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
 {
-    /**
-     * @var File
-     */
-    private $fileDriver;
-
-    /**
-     * @var FileInfo
-     */
-    private $fileInfo;
-
-    /**
-     * @var GetAttachmentsInterface
-     */
-    private $getAttachments;
-
     /**
      * SenderBuilder constructor
      *
@@ -50,9 +34,9 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
         Template $templateContainer,
         IdentityInterface $identityContainer,
         \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder,
-        File $fileDriver,
-        FileInfo $fileInfo,
-        GetAttachmentsInterface $getAttachments,
+        private readonly File $fileDriver,
+        private readonly FileInfo $fileInfo,
+        private readonly GetAttachmentsInterface $getAttachments,
         TransportBuilderByStore $transportBuilderByStore = null
     ) {
         parent::__construct(
@@ -62,9 +46,6 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
             $transportBuilderByStore
         );
 
-        $this->fileDriver = $fileDriver;
-        $this->fileInfo = $fileInfo;
-        $this->getAttachments = $getAttachments;
         $this->transportBuilder->resetAttachments();
     }
 

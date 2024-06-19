@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Team23\EmailAttachmentsAdminUi\Model\Backend;
 
@@ -6,11 +7,6 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Store\Model\ScopeInterface;
 
-/**
- * Class Config
- *
- * @package Team23\EmailAttachmentsAdminUi\Model\Backend
- */
 class Config
 {
     /**
@@ -18,43 +14,33 @@ class Config
      *
      * @const string
      */
-    const ORDER_EMAIL_ATTACHMENTS_PATH = 'sales_pdf/email_attachments/order';
+    private const ORDER_EMAIL_ATTACHMENTS_PATH = 'email_attachments/general/order';
 
     /**
      * Invoice mail attachments XML path
      *
      * @const string
      */
-    const INVOICE_EMAIL_ATTACHMENTS_PATH = 'sales_pdf/email_attachments/invoice';
+    private const INVOICE_EMAIL_ATTACHMENTS_PATH = 'email_attachments/general/invoice';
 
     /**
      * Shipment mail attachments XML path
      *
      * @const string
      */
-    const SHIPMENT_EMAIL_ATTACHMENTS_PATH = 'sales_pdf/email_attachments/shipment';
+    private const SHIPMENT_EMAIL_ATTACHMENTS_PATH = 'email_attachments/general/shipment';
 
     /**
      * Credit memo mail attachments XML path
      *
      * @const string
      */
-    const CREDIT_MEMO_EMAIL_ATTACHMENTS_PATH = 'sales_pdf/email_attachments/creditmemo';
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
-     * @var Json
-     */
-    private $serializer;
+    private const CREDIT_MEMO_EMAIL_ATTACHMENTS_PATH = 'email_attachments/general/creditmemo';
 
     /**
      * @var string
      */
-    private $scopeType = ScopeInterface::SCOPE_STORE;
+    private string $scopeType = ScopeInterface::SCOPE_STORE;
 
     /**
      * Config constructor
@@ -63,11 +49,9 @@ class Config
      * @param Json $serializer
      */
     public function __construct(
-        ScopeConfigInterface $scopeConfig,
-        Json $serializer
+        private readonly ScopeConfigInterface $scopeConfig,
+        private readonly Json $serializer
     ) {
-        $this->scopeConfig = $scopeConfig;
-        $this->serializer = $serializer;
     }
 
     /**
@@ -141,7 +125,7 @@ class Config
     private function getConfigValue(string $path, string $scopeType, int $storeId = null): array
     {
         $result = [];
-        $value  = $this->scopeConfig->getValue(
+        $value = $this->scopeConfig->getValue(
             $path,
             $scopeType,
             $storeId

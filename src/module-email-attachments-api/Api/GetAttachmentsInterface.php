@@ -7,7 +7,6 @@ namespace Team23\EmailAttachmentsApi\Api;
  *
  * @api
  * @version 1.0.0
- * @package Team23\EmailAttachmentsApi\Api
  */
 interface GetAttachmentsInterface
 {
@@ -19,5 +18,5 @@ interface GetAttachmentsInterface
      * @return array
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function get(string $type, int $storeId);
+    public function get(string $type, int $storeId): array;
 }
