@@ -1,7 +1,7 @@
 {
     "name": "team23/module-email-attachments-admin-ui",
     "description": "Attach different files to transaction mails.",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "type": "magento2-module",
     "license": ["BSD-3-Clause"],
     "authors": [
