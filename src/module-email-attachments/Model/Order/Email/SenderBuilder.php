@@ -75,7 +75,7 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
     private function addAttachments(): array
     {
         $templateVars = $this->templateContainer->getTemplateVars();
-        $storeId = $templateVars['store']->getId();
+        $storeId = (int)$templateVars['store']->getId();
         $type = false;
         $result = [];
 
