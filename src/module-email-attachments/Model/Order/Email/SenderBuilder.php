@@ -24,7 +24,7 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
      *
      * @param Template $templateContainer
      * @param IdentityInterface $identityContainer
-     * @param \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder
+     * @param TransportBuilder $transportBuilder
      * @param File $fileDriver
      * @param FileInfo $fileInfo
      * @param GetAttachmentsInterface $getAttachments
@@ -33,7 +33,7 @@ class SenderBuilder extends \Magento\Sales\Model\Order\Email\SenderBuilder
     public function __construct(
         Template $templateContainer,
         IdentityInterface $identityContainer,
-        \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder,
+        TransportBuilder $transportBuilder,
         private readonly File $fileDriver,
         private readonly FileInfo $fileInfo,
         private readonly GetAttachmentsInterface $getAttachments,
